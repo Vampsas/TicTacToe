@@ -1,6 +1,8 @@
 import React from 'react';
 import {createRoot} from "react-dom/client";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import {ListGroup} from "react-bootstrap";
 
 function Square(props) {
     return (
@@ -11,16 +13,17 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-
     renderSquare(i) {
-        return (<Square
-            value={this.props.squares[i]}
-            onClick={() => this.props.onClick(i)}
-        />);
+        return (
+            <Square
+                value={this.props.squares[i]}
+                onClick={() => this.props.onClick(i)}
+            />);
     }
 
     render() {
-        return (<div>
+        return (
+            <div>
             <div className="board-row">
                 {this.renderSquare(0)}
                 {this.renderSquare(1)}
@@ -45,58 +48,77 @@ class Game extends React.Component {
         super(props);
         this.state = {
             history: [{
-                squares: Array(9).fill(null),
+                squares: Array(9).fill(null)
             }],
+            stepNumber: 0,
             xIsNext: true,
+            style: "normal"
         };
     }
+
     handleClick(i) {
-        const history = this.state.history;
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        const squares = this.state.squares.slice();
+        const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
-                squares: squares,
+                squares: squares
             }]),
+            stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
         });
     }
+
+    jumpTo(step) {
+        let style = {
+            [step]: "bold"
+        }
+        this.setState({
+            stepNumber: step,
+            xisNext: (step % 2) === 0,
+            style: style
+        });
+    }
+
     render() {
         const history = this.state.history;
-        const current = history[history.length - 1];
+        const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
         const moves = history.map((step, move) => {
             const desc = move ?
                 'Go to move # ' + move :
                 'Go to game start';
             return (
-                <li>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            )
+                <ListGroup.Item action variant={"secondary"} key={move}
+                                onClick={() => this.jumpTo(move)} style={{fontWeight: this.state.style[move]}}>{desc}
+                </ListGroup.Item>
+            );
         })
         let status;
         if (winner) {
             status = 'Winner: ' + winner;
-        }else{
+        } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
-        return (<div className="game">
-            <div className="game-board">
-                <Board
-                    squares={current.squares}
-                    onClick={(i) => this.handleClick(i)}
-                />
-            </div>
-            <div className="game-info">
-                <div>{status}</div>
-                <ol>{moves}</ol>
-            </div>
-        </div>);
+        return (
+            <div className="game">
+                <div className={"players-turn"}>
+                    <h3>{status}</h3>
+                </div>
+                <div className="game-board">
+                    <Board
+                        squares={current.squares}
+                        onClick={i => this.handleClick(i)}
+                    />
+                </div>
+                <div className="game-info">
+                    <ol>{moves}</ol>
+                </div>
+            </div>);
     }
 }
 

@@ -48,4 +48,13 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
-  
+button{
+  all: unset;
+}
+button.history{
+  width: auto;
+}
+.players-turn{
+  margin: 20px;
+  display: contents;
+}
