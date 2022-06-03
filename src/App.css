@@ -1,6 +1,7 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  background-color: #F1DEDC;
 }
 
 ol, ul {
@@ -46,9 +47,15 @@ ol, ul {
   padding: 10px;
   margin: 10px;
   background-color: rgba(74,152,73,0.20);
+  border-radius: 5px;
 }
 .game-info {
+  margin-left: 10px;
+  margin-right: 20px;
+}
+.game-board{
   margin-left: 20px;
+  margin-right: 10px ;
 }
 button{
   all: unset;
@@ -63,6 +70,11 @@ button.history{
   font-family: Arial, serif;
   border-width: 5px;
   border-style: outset;
+  border-radius: 5px;
   padding: 5px;
   border-color: rgba(74,152,73,0.20);
+  background-color: rgba(74,152,73,0.20);
+}
+.game{
+  text-align: center;
 }
